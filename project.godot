@@ -11,6 +11,8 @@ config_version=5
 [application]
 
 config/features=PackedStringArray("4.5")
+boot_splash/image="uid://daavl1burrx6y"
+config/icon="uid://dh1o0fiiewcqs"
 
 [rendering]
 

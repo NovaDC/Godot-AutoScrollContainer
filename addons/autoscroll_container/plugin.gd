@@ -3,7 +3,7 @@ extends EditorPlugin
 
 const PLUGIN_NAME := "AutoScrollContainer"
 
-const PLUGIN_ICON := preload("res://addons/autoscroll_container/autoscroll_container.svg")
+const PLUGIN_ICON := preload("./icon.svg")
 
 func _get_plugin_name() -> String:
 	return PLUGIN_NAME

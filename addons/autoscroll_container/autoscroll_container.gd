@@ -1,5 +1,5 @@
 @tool
-@icon("res://addons/autoscroll_container/autoscroll_container.svg")
+@icon("./icon.svg")
 class_name AutoScrollContainer
 extends ScrollContainer
 
@@ -116,7 +116,6 @@ func _process(delta:float) -> void:
 			# as well as manually inputted states involving non finite values,
 			# so the progress bar's paramiters don't need to be checked anywhere else but here
 			v_prog.value = 0.0
-
 
 ## Pause the scrolling effect for [member scroll_time_delay_sec].
 ## When [param restart_scrolling] is set, the position and direction of the animation

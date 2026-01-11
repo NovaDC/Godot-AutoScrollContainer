@@ -3,15 +3,15 @@
 importer="texture"
 type="CompressedTexture2D"
 uid="uid://daavl1burrx6y"
-path="res://.godot/imported/autoscroll_container.png-3c7e405cd0b7d71adc1e85c44bc5b06a.ctex"
+path="res://.godot/imported/icon.png-487276ed1e3a0c39cad0279d744ee560.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://addons/autoscroll_container/autoscroll_container.png"
-dest_files=["res://.godot/imported/autoscroll_container.png-3c7e405cd0b7d71adc1e85c44bc5b06a.ctex"]
+source_file="res://icon.png"
+dest_files=["res://.godot/imported/icon.png-487276ed1e3a0c39cad0279d744ee560.ctex"]
 
 [params]
 

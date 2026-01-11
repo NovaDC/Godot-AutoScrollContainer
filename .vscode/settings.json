@@ -105,6 +105,8 @@
 	"cSpell.useGitignore": true,
 	// "cSpell.allowCompoundWords": true, //some of godot's api sets off cspell, so enabling this might be usefull in some situations
 	"cSpell.words": [
+		"autoscroll",
+		"Autoscroll",
 		"bb",
 		"bbcode",
 		"BBcode",
@@ -133,6 +135,7 @@
 		"hdr",
 		"idx",
 		"init",
+		"lerping",
 		"lfs",
 		"lstrip",
 		"novadc",
@@ -140,6 +143,7 @@
 		"Novatools",
 		"oggvorbis",
 		"pingpong",
+		"posmod",
 		"presliced",
 		"res",
 		"scn",
@@ -155,7 +159,7 @@
 		"uid",
 		"usc",
 		"utc",
-		"vram",
+		"vram"
 	],
 	"godotFormatterAndLinter.lineLength": 100, // regardless of local preference, this is offically suggested
 	"godotFormatterAndLinter.lintSeverityLevel": "Warning", // formatting errors are important here

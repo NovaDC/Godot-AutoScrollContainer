@@ -14,15 +14,6 @@ extends ScrollContainer
 ## should not be used to influence other animations that my need proper time accuracy,
 ## or any mechanics that could be tied to physics.
 
-## Amount of time to wait in seconds before scrolling.
-@export var scroll_time_delay_sec:float = 4
-
-## The rate of how much of the entire the container is scrolled per second.
-@export var scrolls_per_sec := Vector2.ONE / 4
-
-## Auto scroll in editor.
-@export var in_editor := false
-
 ## The kind of animation a [AutoScrollContainer] should use.
 enum AnimationMode{
 	## Scroll from the beging to the end, then don't scroll any further.
@@ -32,6 +23,15 @@ enum AnimationMode{
 	## Scroll from the beging to the end, then scroll in reverse back to the begining, and repeat.
 	PINGPONG
 }
+
+## Amount of time to wait in seconds before scrolling.
+@export var scroll_time_delay_sec:float = 4
+
+## The rate of how much of the entire the container is scrolled per second.
+@export var scrolls_per_sec := Vector2.ONE / 4
+
+## Auto scroll in editor.
+@export var in_editor := false
 
 ## The [AnimationMode] this container should use.
 @export var animation_mode:AnimationMode = AnimationMode.PINGPONG
@@ -56,22 +56,22 @@ var _delta_time_countup:float = 0.0
 var _scroll_base_progress := Vector2.ZERO
 var _animation_progress_accumulated := Vector2.ONE
 
-func _ready():
+func _ready() -> void:
 	pause_scrolling(true)
 
-func _input(event: InputEvent):
+func _input(_event:InputEvent) -> void:
 	if pause_on_input:
 		pause_scrolling()
 
-func _gui_input(event: InputEvent):
+func _gui_input(_event:InputEvent) -> void:
 	if pause_on_gui_input:
 		pause_scrolling()
 
-func _unhandled_input(event: InputEvent):
+func _unhandled_input(_event:InputEvent) -> void:
 	if pause_on_unhandled_input:
 		pause_scrolling()
 
-func _process(delta:float):
+func _process(delta:float) -> void:
 	if not in_editor and Engine.is_editor_hint():
 		return
 
@@ -123,7 +123,7 @@ func _process(delta:float):
 ## will also be reset, effectively restarting the animation.
 ## When the animation is reset, it will continue relative to the
 ## scrolling position that it started in.
-func pause_scrolling(restart_scrolling := false):
+func pause_scrolling(restart_scrolling := false) -> void:
 	if not in_editor and Engine.is_editor_hint():
 		return
 
@@ -155,6 +155,8 @@ func pause_scrolling(restart_scrolling := false):
 	else:
 		match (animation_mode):
 			AnimationMode.PINGPONG:
-				_animation_progress_accumulated = _animation_progress_accumulated.floor().posmod(2) + prog_offset
+				_animation_progress_accumulated = _animation_progress_accumulated.floor()
+				_animation_progress_accumulated = _animation_progress_accumulated.posmod(2)
+				_animation_progress_accumulated += prog_offset
 			_:
 				_animation_progress_accumulated = prog_offset

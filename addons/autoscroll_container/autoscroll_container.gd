@@ -9,51 +9,125 @@ extends ScrollContainer
 ## time passes with no caught input (to this specific controll).
 
 ## Amount of time to wait in seconds before scrolling.
-@export var scroll_time_sec:float = 4
+@export var scroll_time_delay_sec:float = 4
 
-## The amount of pixels per second to scroll.
-## Since the amount of pixels scrolled is a intiger value, a non zero value here will grantee that
-## the amount of pixels scrolled will be at least one
-## (preserving the approiprate direction/sign, though).
-@export var scroll_px_per_sec := Vector2.ONE * 3
+@export var scrolls_per_sec := Vector2.ONE / 4
 
 ## Autoscroll in editor.
 @export var in_editor := false
 
-## Allow the timer counting down to start scrolling to count even when the tree is paused.
-## This will NOT effect weather or not the actual scrolling will process when paused,
-## [member Node.process_mode] must be used to control this behaviour.
-@export var scroll_time_process_always := false
+enum AnimationMode{
+	STOP = 0,
+	WRAP,
+	PINGPONG
+}
 
-## Allow the timer counting down to ignore time scale.
-@export var scroll_time_ignore_time_scale := false
+@export var animation_mode:AnimationMode = AnimationMode.PINGPONG
 
-var _current_timer:SceneTreeTimer = null
+@export var pause_on_input := true
+
+@export var pause_on_gui_input := false
+
+@export var pause_on_unhandled_input := false
+
+var _delta_time_countup:float = 0.0
+var _scroll_base_progress := Vector2.ZERO
+var _animation_progress_accumulated := Vector2.ONE
 
 func _ready():
-	restart_scroll_timer()
+	pause_scroll_timer(true)
 
-func _gui_input(_event:InputEvent):
-	restart_scroll_timer()
+func _input(event: InputEvent):
+	if pause_on_input:
+		pause_scroll_timer()
 
-func _process(delta: float):
+func _gui_input(event: InputEvent):
+	if pause_on_gui_input:
+		pause_scroll_timer()
+
+func _unhandled_input(event: InputEvent):
+	if pause_on_unhandled_input:
+		pause_scroll_timer()
+
+func _process(delta:float):
 	if not in_editor and Engine.is_editor_hint():
 		return
-	
-	if _current_timer != null and _current_timer.time_left <= 0:
-		var scroll_diff := Vector2i(round(delta*scroll_px_per_sec))
-		scroll_horizontal += scroll_diff.x if scroll_diff.x != 0 else sign(scroll_px_per_sec.x)
-		scroll_vertical += scroll_diff.y if scroll_diff.y != 0 else sign(scroll_px_per_sec.y)
 
-## Restarts the scroll timer. Will stop the scrolling of this container, but not reset it.
-func restart_scroll_timer():
+	_delta_time_countup += delta
+
+	if _delta_time_countup < scroll_time_delay_sec:
+		return
+
+	_animation_progress_accumulated += delta * scrolls_per_sec
+
+	var animation_bound := _animation_progress_accumulated
+
+	match (animation_mode):
+		AnimationMode.WRAP:
+			animation_bound = animation_bound.posmod(1)
+		AnimationMode.PINGPONG:
+			animation_bound = ((animation_bound + Vector2.ONE).posmod(2) - Vector2.ONE).abs()
+		_:
+			animation_bound = animation_bound.clampf(0, 1)
+
+	var h_prog := get_h_scroll_bar()
+	var v_prog := get_v_scroll_bar()
+
+	if h_prog != null:
+		h_prog.value = lerp(h_prog.min_value,
+							h_prog.max_value - h_prog.page,
+							animation_bound.x
+							)
+		if not is_finite(h_prog.value):
+			# catches both situations where lerping will return NAN,
+			# as well as manually inputed states involving non finite values,
+			# so the progress bar's paramiters dont need to be checked anywhere else but here
+			h_prog.value = 0.0
+
+	if v_prog != null:
+		v_prog.value = lerp(v_prog.min_value,
+							v_prog.max_value - v_prog.page,
+							animation_bound.y
+							)
+		if not is_finite(v_prog.value):
+			# catches both situations where lerping will return NAN,
+			# as well as manually inputed states involving non finite values,
+			# so the progress bar's paramiters dont need to be checked anywhere else but here
+			v_prog.value = 0.0
+
+
+func pause_scroll_timer(restart_direction := false):
 	if not in_editor and Engine.is_editor_hint():
 		return
-	var tree := get_tree()
-	if tree != null:
-		var timer := tree.create_timer(scroll_time_sec,
-									   scroll_time_process_always,
-									   false,
-									   scroll_time_ignore_time_scale
-									  )
-		_current_timer = timer
+
+	_delta_time_countup = 0.0
+
+	var h_prog := get_h_scroll_bar()
+	var v_prog := get_v_scroll_bar()
+
+	var prog_offset := Vector2.ZERO
+
+	if h_prog != null:
+		prog_offset.x = inverse_lerp(h_prog.min_value,
+										h_prog.max_value - h_prog.page,
+										h_prog.value
+										)
+		if is_finite(prog_offset.x):
+			prog_offset.x = 0
+
+	if v_prog != null:
+		prog_offset.y = inverse_lerp(v_prog.min_value,
+										v_prog.max_value - v_prog.page,
+										v_prog.value
+										)
+		if not is_finite(prog_offset.y):
+			prog_offset.y = 0
+
+	if restart_direction:
+		_animation_progress_accumulated = prog_offset
+	else:
+		match (animation_mode):
+			AnimationMode.PINGPONG:
+				_animation_progress_accumulated = _animation_progress_accumulated.floor().posmod(2) + prog_offset
+			_:
+				_animation_progress_accumulated = prog_offset

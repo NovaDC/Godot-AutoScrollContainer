@@ -57,19 +57,19 @@ var _scroll_base_progress := Vector2.ZERO
 var _animation_progress_accumulated := Vector2.ONE
 
 func _ready():
-	pause_scroll_timer(true)
+	pause_scrolling(true)
 
 func _input(event: InputEvent):
 	if pause_on_input:
-		pause_scroll_timer()
+		pause_scrolling()
 
 func _gui_input(event: InputEvent):
 	if pause_on_gui_input:
-		pause_scroll_timer()
+		pause_scrolling()
 
 func _unhandled_input(event: InputEvent):
 	if pause_on_unhandled_input:
-		pause_scroll_timer()
+		pause_scrolling()
 
 func _process(delta:float):
 	if not in_editor and Engine.is_editor_hint():
@@ -119,11 +119,11 @@ func _process(delta:float):
 
 
 ## Pause the scrolling effect for [member scroll_time_delay_sec].
-## When [param restart_direction] is set, the position and direction of the animation
+## When [param restart_scrolling] is set, the position and direction of the animation
 ## will also be reset, effectively restarting the animation.
 ## When the animation is reset, it will continue relative to the
 ## scrolling position that it started in.
-func pause_scroll_timer(restart_direction := false):
+func pause_scrolling(restart_scrolling := false):
 	if not in_editor and Engine.is_editor_hint():
 		return
 
@@ -150,7 +150,7 @@ func pause_scroll_timer(restart_direction := false):
 		if not is_finite(prog_offset.y):
 			prog_offset.y = 0
 
-	if restart_direction:
+	if restart_scrolling:
 		_animation_progress_accumulated = prog_offset
 	else:
 		match (animation_mode):

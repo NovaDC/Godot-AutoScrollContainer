@@ -10,6 +10,9 @@ config_version=5
 
 [application]
 
+config/name="Godot-AutoScrollContainer"
+config/description="A ScrollContainer that automatically scrolls itself, with multiple configurations for the type of scrolling animation, timing, and the ability to pause and resume."
+config/version="v2.0.0.0"
 config/features=PackedStringArray("4.5")
 boot_splash/image="uid://daavl1burrx6y"
 config/icon="uid://dh1o0fiiewcqs"

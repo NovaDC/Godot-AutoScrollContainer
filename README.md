@@ -1,2 +1,5 @@
-# AutoScrollContainer
- A ScrollContainer that automatically scrolls a specified amount after a specified amount of time passes with no caught input (to this specific controll).
+# Godot-AutoScrollContainer
+
+A ScrollContainer that automatically scrolls itself, with multiple configurations for the type of scrolling animation, timing, and the ability to pause and resume.
+
+![The AutoScrollContainer icon](./icon.png "Icon")

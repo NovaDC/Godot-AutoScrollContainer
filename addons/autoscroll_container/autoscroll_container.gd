@@ -3,7 +3,7 @@
 class_name AutoScrollContainer
 extends ScrollContainer
 
-## AutoscrollContainer
+## AutoScrollContainer
 ##
 ## A [ScrollContainer] that automatically scrolls itself, with multiple configurations for
 ## the type of scrolling animation, timing, and the ability to pause and resume.[br]
@@ -20,10 +20,10 @@ extends ScrollContainer
 ## The rate of how much of the entire the container is scrolled per second.
 @export var scrolls_per_sec := Vector2.ONE / 4
 
-## Autoscroll in editor.
+## Auto scroll in editor.
 @export var in_editor := false
 
-## The kind of animation a [AutoscrollContainer] should use.
+## The kind of animation a [AutoScrollContainer] should use.
 enum AnimationMode{
 	## Scroll from the beging to the end, then don't scroll any further.
 	STOP = 0,
